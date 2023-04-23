@@ -10,10 +10,6 @@ dp.register_message_handler(dall_e_handler ,state='dall_e')
 dp.register_message_handler(text_generator_handler,state='text_generator')
 
 
-
-
-
-
 @dp.message_handler(content_types=['text'])
 async def bot_message(message: types.Message):
     if message.chat.type == 'private':
