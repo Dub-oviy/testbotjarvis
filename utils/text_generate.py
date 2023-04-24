@@ -1,12 +1,12 @@
 import openai
 from data.config import OPENAI_API
-from language_mode import language_mode
+from loader import languageMode
 
 openai.api_key = OPENAI_API
 
-if language_mode == 'ru':
+if languageMode.languageMode == 'ru':
   system_prompt = 'You are a bot that generates text by the name of the text and always write the text in Russian'
-elif language_mode == 'eng':
+elif languageMode.languageMode == 'eng':
   system_prompt = 'You are a bot that generates text by the name of the text and always write the text in English'
 else:
   system_prompt = 'You are a bot that generates text by Text Name if the text name is in Russian then the text will be in Russian if the text name is in English then the text will be in English'
@@ -27,7 +27,6 @@ async def text_generator(prompt):
        presence_penalty = 0.6,
        stop = ["You:"]
     )
-    # print(response['choices'][0]['message']['content'])
     return response['choices'][0]['message']['content']
     
 

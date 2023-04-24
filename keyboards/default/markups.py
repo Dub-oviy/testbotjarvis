@@ -1,9 +1,11 @@
 from aiogram.types import ReplyKeyboardMarkup,KeyboardButton
+from loader import languageMode
 
-Chatgpt = KeyboardButton('Всезнайка')
+currentLanguage = languageMode.languageMode
+Chatgpt = KeyboardButton('Всезнайка' if currentLanguage == 'ru' else 'Wiki' )
 Dall_e = KeyboardButton('Генерация изображений')
 Text_generation = KeyboardButton('Генерация текста')
-Trasnslator = KeyboardButton('Режим переводчика')
+Trasnslator = KeyboardButton( 'Режим переводчика')
 Cansel = KeyboardButton("Назад")
 
 mainMenu = ReplyKeyboardMarkup(resize_keyboard=True)
