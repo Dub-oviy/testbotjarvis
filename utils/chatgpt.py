@@ -3,17 +3,9 @@ from data.config import OPENAI_API
 from loader import languageMode
 
 openai.api_key = OPENAI_API
-print(languageMode) 
-if languageMode.languageMode == 'ru':
-  system_prompt= 'You are the assistant to the user and answer all his questions in a friendly way, and also answer questions only in Russion.'
-elif languageMode.languageMode == 'eng':
-  system_prompt = 'You are the assistant to the user and answer all his questions in a friendly way, and also answer questions only in English.'
-else:
-  system_prompt = 'You are the user assistant and answer all his questions in a friendly way'
-
 
 async def get_chatgpt_message(prompt):
-    print(languageMode) 
+
     if languageMode.languageMode == 'ru':
       system_prompt= 'You are the assistant to the user and answer all his questions in a friendly way, and also answer questions only in Russion.'
     elif languageMode.languageMode == 'eng':
