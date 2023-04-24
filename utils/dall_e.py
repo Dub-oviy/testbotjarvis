@@ -22,8 +22,10 @@ async def generate_image(prompt):
         presence_penalty = 0.6,
         stop = ["You:"]
     )
-    print(responses.choices[0]['message']['content'])
-    text = responses.choices[0]['message']['content']
+    if responses == None:
+        pass
+    else:
+        text = responses.choices[0]['message']['content']
 
     # Отправляем текст в DALL-E для генерации изображения
     response = requests.post(

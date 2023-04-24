@@ -6,10 +6,12 @@ Chatgpt = KeyboardButton('Всезнайка' if currentLanguage == 'ru' else 'W
 Dall_e = KeyboardButton('Генерация изображений')
 Text_generation = KeyboardButton('Генерация текста')
 Trasnslator = KeyboardButton( 'Режим переводчика')
-Cansel = KeyboardButton("Назад")
+Cansel = KeyboardButton("Выход из режима")
 
 mainMenu = ReplyKeyboardMarkup(resize_keyboard=True)
-mainMenu.add(Chatgpt,Dall_e,Text_generation,Trasnslator,Cansel)
+mainMenu.add(Chatgpt,Dall_e,Text_generation,Trasnslator)
+secondMenu = ReplyKeyboardMarkup(resize_keyboard=True)
+secondMenu.add(Cansel)
 
 
 
