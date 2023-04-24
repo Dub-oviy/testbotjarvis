@@ -27,7 +27,7 @@ async def dall_e_handler(message: types.Message):
             pass
         else:
             response = await dall_e.generate_image(message.text)
-            await bot.send_message(chat_id=message.chat.id, text=response, reply_to_message_id=message.message_id)
+            await bot.send_photo(chat_id=message.chat.id, photo=response, reply_to_message_id=message.message_id)
 
 async def text_generator_handler(message: types.Message):
 
