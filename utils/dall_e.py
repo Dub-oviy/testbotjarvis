@@ -1,5 +1,6 @@
 import openai
 import requests
+import base64
 from data.config import OPENAI_API
 
 openai.api_key = OPENAI_API
@@ -8,7 +9,7 @@ system_prompt = 'You are a message processor for DALL-E for non-commercial purpo
 
     
 async def generate_image(prompt):
-    
+    print(prompt)
     responses = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -40,8 +41,13 @@ async def generate_image(prompt):
                 "prompt": text,
                 "num_images": 1,
                 "size": "512x512",
-                "response_format": "url",
+                "response_format": "b64_json",
             },
         )
-
-        return response.json()["data"][0]
+        if "data" in response.json() and len(response.json()["data"]) > 0 and "base64" in response.json()["data"][0]:
+            image_data = response.json()["data"][0]["base64"]
+            image_binary = base64.b64decode(image_data)
+            return image_binary
+        else:
+            print('error')
+            return None
