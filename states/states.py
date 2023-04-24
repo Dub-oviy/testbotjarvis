@@ -21,7 +21,7 @@ async def dall_e_handler(message: types.Message):
     if message.text == 'Выход из режима':
         # Удаляем обработчик сообщений Всезнайка
         await dp.current_state(user=message.from_user.id).reset_state()
-        await message.reply('Вы вышли из режим Генерация изображений',reply_markup=markups.mainMenu)
+        await message.reply('Вы вышли из режима Генерация изображений',reply_markup=markups.mainMenu)
     else:
         response = await dall_e.generate_image(message.text)
         await bot.send_message(chat_id=message.chat.id, text=response, reply_to_message_id=message.message_id)

@@ -13,6 +13,14 @@ else:
 
 
 async def get_chatgpt_message(prompt):
+    print(languageMode) 
+    if languageMode.languageMode == 'ru':
+      system_prompt= 'You are the assistant to the user and answer all his questions in a friendly way, and also answer questions only in Russion.'
+    elif languageMode.languageMode == 'eng':
+      system_prompt = 'You are the assistant to the user and answer all his questions in a friendly way, and also answer questions only in English.'
+    else:
+      system_prompt = 'You are the user assistant and answer all his questions in a friendly way'
+
     response = openai.ChatCompletion.create(
        model = "gpt-3.5-turbo" ,
        messages = [
