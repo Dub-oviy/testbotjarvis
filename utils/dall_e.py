@@ -7,7 +7,7 @@ from data.config import OPENAI_API
 openai.api_key = OPENAI_API
 
 
-system_prompt = 'You are a message handler for DALL-E for non-commercial purposes, your task is to process the message for grammar, as well as make the request more detailed to your taste, so that DALL-E gives a good realistic colorful picture, do your job, never ask anything, do not ask what exactly the user wants to do, do not ask for clarification, just accept the request for improvement and pass DALL-E, do not write anything other than the answer given for DALL-E, and do not ask anything at all, if the user gave an insufficient number of details, give only FALSE and nothing more'
+system_prompt = 'As a non-commercial DALL-E message handler, my task is to process messages for grammar and improve requests to produce realistic and colorful pictures. I will not ask for any clarification or additional details, but will simply accept the request for improvement and pass it on to DALL-E. Please note that I will not write anything other than the answer given for DALL-E, and I will not ask any questions. Thank you.'
 
     
 async def generate_image(prompt):

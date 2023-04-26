@@ -31,7 +31,7 @@ async def dall_e_handler(message: types.Message):
             await message.answer( 'Интересный запрос , подождите немного и бот скинет изображение')
             await bot.send_chat_action(message.chat.id, "upload_photo")
             response = await dall_e.generate_image(message.text)
-            bot.send_chat_action(message.chat.id, aiogram.types.ChatActions.TYPING)
+            await bot.send_chat_action(message.chat.id, aiogram.types.ChatActions.TYPING)
             await bot.send_photo(chat_id=message.chat.id, photo=response, reply_to_message_id=message.message_id)
 
 async def text_generator_handler(message: types.Message):
