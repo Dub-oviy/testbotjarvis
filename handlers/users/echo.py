@@ -3,7 +3,7 @@ from aiogram import types
 from states.states import chatgpt_handler, dall_e_handler, text_generator_handler
 from keyboards.default import markups
 
-from keyboards.inline import inlinemarups
+from keyboards.inline import inlinemarkups
 # import profanity_check
 dp.register_message_handler(chatgpt_handler, state='chatgpt')
 dp.register_message_handler(dall_e_handler ,state='dall_e')
@@ -27,6 +27,6 @@ async def bot_message(message: types.Message):
             await text_generator_handler(message) 
         elif message.text == 'Режим переводчика':
             await message.reply('Это режим переводчика тут вы выбираете язык на котором бот булет вам писать , можно не трогать этот режим и бот будет работать в обынчом режиме',
-                                reply_markup=inlinemarups.language)
+                                reply_markup=inlinemarkups.language)
             
 
