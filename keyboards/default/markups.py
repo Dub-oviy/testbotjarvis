@@ -1,7 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup,KeyboardButton
-from loader import languageMode
 
-currentLanguage = languageMode.languageMode
+
 
 Dall_e = KeyboardButton('Генерация изображений')
 Trasnslator = KeyboardButton( 'Режим переводчика')

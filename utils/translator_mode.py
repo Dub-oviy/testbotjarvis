@@ -1,15 +1,15 @@
-from loader import dp, languageMode
-from aiogram import types
+from googletrans import Translator
 
+translator = Translator()
 
-@dp.callback_query_handler()
-async def transalor_mode(callback : types.CallbackQuery):
-    if callback.data == 'ru':
-        languageMode.languageMode = 'ru'
-        await callback.answer(text='Вы перешли в русский режим')
-        await callback.answer(text=languageMode.languageMode)
-
-    elif callback.data == 'eng':
-        languageMode.languageMode = 'eng'
-        await callback.answer(text='You switched to english mode')
-        await callback.answer(text=languageMode.languageMode)
+async def translate_mode(text):
+    lang = translator.detect(text).lang
+    if lang == 'en':
+        translation = translator.translate(text, dest='ru').text
+    elif lang == 'ru':
+        translation = translator.translate(text, dest='en').text
+    else:
+        translation = "Я не могу определить язык сообщения."
+    
+    answer = translation
+    return answer

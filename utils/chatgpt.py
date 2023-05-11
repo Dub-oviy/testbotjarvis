@@ -1,17 +1,17 @@
 import openai 
 from data.config import OPENAI_API
-from loader import languageMode
+
 
 openai.api_key = OPENAI_API
 
 async def get_chatgpt_message(prompt):
 
-    if languageMode.languageMode == 'ru':
-      system_prompt= 'You are the assistant to the user and answer all his questions in a friendly way, and also answer questions only in Russion.'
-    elif languageMode.languageMode == 'eng':
-      system_prompt = 'You are the assistant to the user and answer all his questions in a friendly way, and also answer questions only in English.'
-    else:
-      system_prompt = 'You are the user assistant and answer all his questions in a friendly way'
+    # if languageMode.languageMode == 'ru':
+    #   system_prompt= 'You are the assistant to the user and answer all his questions in a friendly way, and also answer questions only in Russion.'
+    # elif languageMode.languageMode == 'eng':
+    #   system_prompt = 'You are the assistant to the user and answer all his questions in a friendly way, and also answer questions only in English.'
+    # else:
+    system_prompt = 'You are the user assistant and answer all his questions in a friendly way'
 
     response = openai.ChatCompletion.create(
        model = "gpt-3.5-turbo" ,
