@@ -3,9 +3,14 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from data import config
 import openai
 from language_mode import LanguageMode
+from aiogram.types import InputFile
+from images import *
 
 bot = Bot(token=config.BOT_TOKEN, parse_mode=types.ParseMode.HTML)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 openai.api_key = config.OPENAI_API
 languageMode = LanguageMode('default')
+hellophoto = InputFile('images/Hello.png')
+textphoto = InputFile('images/textimage.png')
+translatephoto = InputFile('images/Translate.png')
