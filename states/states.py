@@ -16,11 +16,11 @@ async def chatgpt_handler(message: types.Message):
         await message.answer('Вы вышли из режим Всезнайка',reply_markup=markups.mainMenu)
         if message.text == 'Генерация изображений 🌄':
             await dp.current_state(user=message.from_user.id).set_state('dall_e')
-            await bot.send_photo(message.chat.id , photo=textphoto ,caption ='Это режим генерации изображений, тут вы можете написать, что вы хотите увидеть, а потом бот сгенерирует вам изображение',
+            await bot.send_message(message.chat.id , 'Это режим генерации изображений, тут вы можете написать, что вы хотите увидеть, а потом бот сгенерирует вам изображение',
                                 reply_markup=markups.secondMenu)
             await dall_e_handler(message)
         elif message.text == 'Режим переводчика 📚':
-            await bot.send_photo(message.chat.id , photo=translatephoto ,caption ='Вы вошли в режим переводчика, при написании текста на английском языке, бот автоматически переведет его на Русский.',
+            await bot.send_message(message.chat.id  ,'Вы вошли в режим переводчика, при написании текста на английском языке, бот автоматически переведет его на Русский.',
                                 reply_markup=markups.secondMenu)
             await dp.current_state(user=message.from_user.id).set_state('translator')
             await translator_handler(message)
@@ -34,7 +34,7 @@ async def dall_e_handler(message: types.Message):
     if message.text == 'Выход из режима 🔼':
         # Удаляем обработчик сообщений Всезнайка
         await dp.current_state(user=message.from_user.id).reset_state()
-        await message.reply('Вы вышли из режим Генерация изображений',reply_markup=markups.mainMenu)
+        await message.reply('Вы вышли из режима Генерация изображений',reply_markup=markups.mainMenu)
     else:
         if message.text == 'Генерация изображений 🌄':
             pass
