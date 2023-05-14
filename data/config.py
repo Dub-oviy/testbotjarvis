@@ -6,7 +6,6 @@ env.read_env()
 
 BOT_TOKEN = env.str("BOT_TOKEN")  # Забираем значение типа str
 ADMINS = env.list("ADMINS")  # Тут у нас будет список из админов
-IP = env.str("ip")  # Тоже str, но для айпи адреса хоста
 OPENAI_API = env.str("OPENAI_API")
 # OPENAI_API = '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'
 # ADMINS = [1133571937]  # Тут у нас будет список из админов
