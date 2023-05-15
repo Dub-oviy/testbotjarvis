@@ -11,6 +11,6 @@ storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 openai.api_key = config.OPENAI_API
 languageMode = LanguageMode('default')
-hellophoto = InputFile('images/Hello.png')
-textphoto = InputFile('images/textimage.png')
-translatephoto = InputFile('images/Translate.png')
+# hellophoto = 'images/Hello.png'
+# textphoto = InputFile('images/textimage.png')
+# translatephoto = InputFile('images/Translate.png')
