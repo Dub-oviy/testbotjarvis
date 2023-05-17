@@ -1,10 +1,10 @@
 import aiogram
-from loader import dp,bot,textphoto,translatephoto
+from loader import dp,bot
 from aiogram import types
 from utils import chatgpt,dall_e,translator_mode
 from keyboards.inline import inlinemarkups
 from keyboards.default import markups
-
+from images import *
 
 
 
@@ -16,11 +16,13 @@ async def chatgpt_handler(message: types.Message):
         await message.answer('Вы вышли из режим Всезнайка',reply_markup=markups.mainMenu)
         if message.text == 'Генерация изображений 🌄':
             await dp.current_state(user=message.from_user.id).set_state('dall_e')
-            await bot.send_message(message.chat.id , 'Это режим генерации изображений, тут вы можете написать, что вы хотите увидеть, а потом бот сгенерирует вам изображение',
+            with open('images/textimage.png','rb') as photo1:
+                await bot.send_photo(message.chat.id,photo=photo1 , caption ='Это режим генерации изображений, тут вы можете написать, что вы хотите увидеть, а потом бот сгенерирует вам изображение',
                                 reply_markup=markups.secondMenu)
             await dall_e_handler(message)
         elif message.text == 'Режим переводчика 📚':
-            await bot.send_message(message.chat.id  ,'Вы вошли в режим переводчика, при написании текста на английском языке, бот автоматически переведет его на Русский.',
+            with open('images/textimage.png','rb') as photo2:
+                await bot.send_photo(message.chat.id,photo=photo2 , caption ='Вы вошли в режим переводчика, при написании текста на английском языке, бот автоматически переведет его на Русский.',
                                 reply_markup=markups.secondMenu)
             await dp.current_state(user=message.from_user.id).set_state('translator')
             await translator_handler(message)
