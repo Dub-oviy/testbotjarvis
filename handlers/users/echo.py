@@ -17,10 +17,10 @@ async def bot_message(message: types.Message):
         state = dp.current_state(user=message.from_user.id)
         if message.text == 'Генерация изображений 🌄':
             # Если пользователь выбрал другой режим, сбрасываем текущее состояние на "dall_e"
-            await state.set_state('dall_e')
             with open('images/textimage.png','rb') as photo1:
                 await bot.send_photo(message.chat.id,photo=photo1 , caption ='Это режим генерации изображений, тут вы можете написать, что вы хотите увидеть, а потом бот сгенерирует вам изображение',
                                 reply_markup=markups.secondMenu)
+            await state.set_state('dall_e')
             await dall_e_handler(message)
 
         elif message.text == 'Режим переводчика 📚':
