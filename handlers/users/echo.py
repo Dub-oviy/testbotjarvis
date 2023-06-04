@@ -39,5 +39,5 @@ async def bot_message(message: types.Message):
             if await state.get_state() != 'chatgpt':
             # Если состояние пользователя не "chatgpt", то сбрасываем его на "chatgpt"
                 await state.set_state('chatgpt')
-                await message.answer('Обратитесь ко мне, написав сообщение, и я с радостью помогу вам в вашем поиске информации и отвечу на ваши вопросы.')
                 await chatgpt_handler(message)
+                
