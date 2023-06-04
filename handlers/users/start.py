@@ -8,7 +8,7 @@ from images import *
 
 @dp.message_handler(commands=['start'])
 async def bot_start(message: types.Message):
-    if (not db.user_exists):
+    if  (not db.user_exists(message.from_user.id)):
         db.add_user(message.from_user.id ,message.from_user.full_name,message.from_user.username)
     else:
         pass

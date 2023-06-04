@@ -17,6 +17,7 @@ class Database:
     def get_user_id(self,user_id):
          with self.connection:
             result = self.cursor.execute("SELECT user_id FROM users WHERE user_id = ?",(user_id,)).fetchall()
+            user_id = None
             for row in result :
                 user_id = str(row[0])
             return user_id
@@ -24,6 +25,7 @@ class Database:
     def get_user_name(self,user_id):
          with self.connection:
             result = self.cursor.execute("SELECT user_name FROM users WHERE user_id = ?",(user_id,)).fetchall()
+            user_name = None
             for row in result :
                 user_name =  str(row[0])
             return user_name
@@ -31,6 +33,7 @@ class Database:
     def get_user_userame(self,user_id):
          with self.connection:
             result = self.cursor.execute("SELECT user_username FROM users WHERE user_id = ?",(user_id,)).fetchall()
+            user_username = None
             for row in result :
                 user_username = str(row[0])
             return user_username
@@ -38,6 +41,7 @@ class Database:
     def get_user_balance(self,user_id):
          with self.connection:
             result = self.cursor.execute("SELECT user_balance FROM users WHERE user_id = ?",(user_id,)).fetchall()
+            balance = None
             for row in result :
                 balance = str(row[0])
             return balance
