@@ -64,9 +64,22 @@ class Database:
             result = self.cursor.execute("UPDATE users SET user_balance = user_balance - ? WHERE user_id = ?", (amount, user_id))
         return result.rowcount
     
-    # def get_chat_history(self,user_id):
-    #     with self.connection:
-    #         result = self.cursor.execute("SELECT message FROM chat_history WHERE user_id = ?", (user_id,)).fetchall()
-    #         for row in result:
-    #             chat_history = str(row[0])
-    #         return chat_history
+    def top_up_balance(self):
+    # Fetch all user IDs and their current balances
+        with self.connection:
+            self.cursor.execute("SELECT user_id, user_balance FROM users")
+        rows = self.cursor.fetchall()
+
+        # Update the user balances
+        for row in rows:
+            user_id, user_balance = row
+            new_balance = user_balance + 5
+
+            # Execute the update query
+            self.cursor.execute("UPDATE users SET user_balance = ? WHERE user_id = ?",
+                        (new_balance, user_id))
+
+    # Commit the changes and close the connection
+        self.connection.commit()
+    
+    
