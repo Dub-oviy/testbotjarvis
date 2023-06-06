@@ -19,10 +19,11 @@ async def chatgpt_handler(message: types.Message):
         chat_id = message.chat.id
         user_id = message.from_user.id
     # try:
-        if message.text == 'Генерация изображений 🌄' or message.text == 'Режим переводчика 📚' or message.text == 'Выход из режима 🔼':
+        if message.text == 'Генерация изображений 🌄' or message.text == 'Режим переводчика 📚' or message.text == 'Выход из режима 🔼' or message.text == 'Очистить историю чата 🔄':
             # Удаляем обработчик сообщений Всезнайка
             await dp.current_state(user=message.from_user.id).set_state(None)
-            await message.answer('Вы вышли из чата GPT',reply_markup=markups.mainMenu)
+            if(message.text != 'Очистить историю чата 🔄'):
+                await message.answer('Вы вышли из чата GPT',reply_markup=markups.mainMenu)
             if message.text == 'Генерация изображений 🌄':
                 await dp.current_state(user=message.from_user.id).set_state('dall_e')
                 with open('images/textimage.png','rb') as photo1:
@@ -35,6 +36,9 @@ async def chatgpt_handler(message: types.Message):
                                     reply_markup=markups.secondMenu)
                 await dp.current_state(user=message.from_user.id).set_state('translator')
                 await translator_handler(message)
+            elif message.text == 'Очистить историю чата 🔄':
+                chatGPTMessageHandler.reset_chat_history(chat_id= chat_id);
+                await message.answer('История чата была очищена',reply_markup=markups.mainMenu) 
         elif message.text == '/start' or message.text == '/help' or message.text == '/balance' or message.text == '/manual':
             if message.text == '/start':
                 await dp.current_state(user=message.from_user.id).reset_state()

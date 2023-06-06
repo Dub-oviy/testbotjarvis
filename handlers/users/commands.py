@@ -13,7 +13,7 @@ async def balance_getter(message : types.Message):
     await message.answer(
         f"Пользователь: {userName}\nИмя пользователя: @{userUserName}\nID: {userId}\nБaлaнc: {userBalance} ипользований"
     )
-    print(type(db.get_user_balance(message.from_user.id)))
+    
 
 @dp.message_handler(commands=['manual'])
 async def manual_getter(message: types.Message):
