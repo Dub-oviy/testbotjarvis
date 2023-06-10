@@ -1,3 +1,4 @@
+import datetime
 import sqlite3
 
 class Database:
@@ -7,7 +8,7 @@ class Database:
 
     def add_user(self, user_id, user_name, user_username):
         with self.connection:
-            return self.cursor.execute("INSERT INTO users (user_id, user_name, user_username) VALUES (?, ?, ?)", (user_id, user_name, user_username))
+            return self.cursor.execute("INSERT INTO users (user_id, user_name, user_username,datе) VALUES (?, ?, ?, ?)", (user_id, user_name, user_username , datetime.date.today()))
 
     def user_exists(self,user_id):
         with self.connection:
@@ -42,6 +43,39 @@ class Database:
                 balance = str(row[0])
             return balance
     
+    def get_all_userid(self):
+        with self.connection:
+            result = self.cursor.execute("SELECT user_id FROM users").fetchall()
+            users_ids = [row[0] for row in result]
+            return users_ids
+        
+    def get_weekly_statistics(self):
+        last_week = datetime.datetime.now() - datetime.timedelta(days=7)
+        last_week_str = last_week.strftime('%Y-%m-%d')
+        with self.connection:
+            result = self.cursor.execute(f"SELECT user_id, user_name, user_username FROM users WHERE datе >= '{last_week_str}'").fetchall()
+            message_text = f'За последнюю неделю зарегистрировалось {len(result)} новых пользователей:\n'
+            for row in result:
+                user_id = row[0]
+                user_name = row[1]
+                user_username = row[2]
+                message_text += f'ID: {user_id}, Имя: {user_name}, Username: @{user_username}\n'
+            return message_text
+        
+
+    def get_mounthly_statistics(self):
+        last_week = datetime.datetime.now() - datetime.timedelta(days=30)
+        last_week_str = last_week.strftime('%Y-%m-%d')
+        with self.connection:
+            result = self.cursor.execute(f"SELECT user_id, user_name, user_username FROM users WHERE datе >= '{last_week_str}'").fetchall()
+            message_text = f'За последний месяц зарегистрировалось {len(result)} новых пользователей:\n'
+            for row in result:
+                user_id = row[0]
+                user_name = row[1]
+                user_username = row[2]
+                message_text += f'ID: {user_id}, Имя: {user_name}, Username: @{user_username}\n'
+            return message_text
+
     def add_chat_history(self,user_id,message):
         with self.connection:
             return self.cursor.execute("INSERT INTO chat_history (user_id, message) VALUES (?, ?)", (user_id, message, ))
