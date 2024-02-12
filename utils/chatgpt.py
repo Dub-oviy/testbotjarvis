@@ -1,9 +1,11 @@
 import datetime
 import logging
 from datetime import date
+# from loader import db
 
 import openai
 import tiktoken 
+
 
 
 GPT_3_MODELS = ("gpt-3.5-turbo", "gpt-3.5-turbo-0301")
@@ -12,14 +14,14 @@ GPT_4_32K_MODELS = ("gpt-4-32k", "gpt-4-32k-0314")
 GPT_ALL_MODELS = GPT_3_MODELS + GPT_4_MODELS + GPT_4_32K_MODELS
 
 
+
 class ChatGptMessageHandler:
-    
     def __init__(self):
       self.conversations: dict[int: list] = {}  # {chat_id: history}
       self.last_updated: dict[int: datetime] = {}  # {chat_id: last_update_timestamp}
       self.system_prompt = 'You are the user assistant and answer all his questions in a friendly way'
 
-    async def get_chatgpt_message(self, chat_id, prompt):
+    async def get_chatgpt_message(self, chat_id, prompt,user_db):
       print(prompt)
       try:  
         if chat_id not in self.conversations or self.__max_age_reached(chat_id):
@@ -27,10 +29,10 @@ class ChatGptMessageHandler:
 
         self.last_updated[chat_id] = datetime.datetime.now()
         
-        self.__add_to_history(chat_id, role = "user", content = prompt);
+        self.__add_to_history(chat_id, role = "user", content = prompt)
         
 
-        token_count = self.__count_tokens(self.conversations[chat_id])
+        token_count = self.__count_tokens(self.conversations[chat_id],user_db=user_db)
         print(token_count)
         exceeded_max_tokens = token_count + 2400 > 4096
         exceeded_max_history_size = len(self.conversations[chat_id]) > 15
@@ -38,7 +40,7 @@ class ChatGptMessageHandler:
         if exceeded_max_tokens or exceeded_max_history_size:
             logging.info(f'Chat history for chat ID {chat_id} is too long. Summarising...')
             try:
-                summary = await self.__summarise(self.conversations[chat_id][:-1])
+                summary = await self.__summarise(self.conversations[chat_id][:-1],user_db=user_db)
                 logging.debug(f'Summary: {summary}')
                 self.reset_chat_history(chat_id)
                 self.__add_to_history(chat_id, role="assistant", content=summary)
@@ -47,10 +49,21 @@ class ChatGptMessageHandler:
                 logging.warning(f'Error while summarising chat history: {str(e)}. Popping elements instead...')
                 self.conversations[chat_id] = self.conversations[chat_id][-15:]
 
-        
-
+        current_sub = user_db
+        try:
+            if current_sub == 'Start':
+                model_ver = "gpt-3.5-turbo"
+            elif current_sub == 'Standard':
+                model_ver ='gpt-4'
+            elif current_sub == 'Advanced':
+                model_ver = 'gpt-4-0125-preview'
+            else:
+                pass
+        except Exception as e:
+            logging.warning(f'Error in getting chatgpt model {str(e)}')
+        print(model_ver)
         response = openai.ChatCompletion.create(
-          model = "gpt-3.5-turbo" ,
+          model = model_ver ,
           messages = self.conversations[chat_id],
           temperature = 0.4,
           max_tokens = 2400,
@@ -75,13 +88,26 @@ class ChatGptMessageHandler:
     
     
 
-    def __count_tokens(self, messages) -> int:
-        model = "gpt-3.5-turbo"
+    def __count_tokens(self, messages,user_db) -> int:
+        current_sub = user_db
+        try:
+            if current_sub == 'Start':
+                model_ver = "gpt-3.5-turbo"
+            elif current_sub == 'Standard':
+                model_ver ='gpt-4'
+            elif current_sub == 'Advanced':
+                model_ver = 'gpt-4-0125-preview'
+            else:
+                pass
+        except Exception as e:
+            logging.warning(f'Error in getting chatgpt model {str(e)}')
+
+        model = model_ver
         
         try:
             encoding = tiktoken.encoding_for_model(model)
         except KeyError:
-            encoding = tiktoken.get_encoding("gpt-3.5-turbo")
+            encoding = tiktoken.get_encoding(model)
 
         if model in GPT_3_MODELS:
             tokens_per_message = 4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
@@ -132,7 +158,20 @@ class ChatGptMessageHandler:
 
 
 
-    async def __summarise(self, conversation) -> str:
+    async def __summarise(self, conversation,user_db) -> str:
+        current_sub = user_db
+        print(current_sub)
+        try:
+            if current_sub == 'Start':
+                model_ver = "gpt-3.5-turbo"
+            elif current_sub == 'Standard':
+                model_ver ='gpt-4'
+            elif current_sub == 'Advanced':
+                model_ver = 'gpt-4-0125-preview'
+            else:
+                pass
+        except Exception as e:
+            logging.warning(f'Error in getting chatgpt model {str(e)}')
 
         messages = [
             {"role": "assistant", "content": "Summarize this conversation in 700 characters or less strictly"},
@@ -140,7 +179,7 @@ class ChatGptMessageHandler:
         ]
 
         response = await openai.ChatCompletion.acreate(
-            model="gpt-3.5-turbo",
+            model=model_ver,
             messages=messages,
             temperature=0.4,
         )

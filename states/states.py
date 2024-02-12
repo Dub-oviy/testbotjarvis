@@ -1,8 +1,7 @@
 import logging
 import aiogram
 import asyncio
-import telegram
-from loader import Admins, Users, dp,bot,db,chatGPTMessageHandler
+from loader import Admins, Users, dp,bot,db
 from aiogram import types
 from states.mailing_state import bot_mailing
 from utils import dall_e,translator_mode
@@ -11,10 +10,12 @@ from images import *
 from handlers.users.start import bot_start
 from handlers.users.help import bot_help
 from handlers.users.commands import manual_getter,balance_getter
+from utils.chatgpt import ChatGptMessageHandler
 
-commandlist = ['/start' ,'/help','/balance','/manual']
+commandlist = ['/start' ,'/help','/profile','/manual']
 adminmenu = [ 'Отправить сообщение' ,'Статистика за неделю' ,'Статистика за месяц']
 usermenu = ['Генерация изображений 🌄','Режим переводчика 📚' ]
+chatGPTMessageHandler = ChatGptMessageHandler()
 
 
 async def clear_chat_history(message:types.Message):
@@ -44,15 +45,16 @@ async def chatgpt_handler(message: types.Message):
                 await dp.current_state(user=user_id).set_state('translator')
                 await translator_handler(message)
             elif message.text == 'Очистить историю чата 🔄':
-                chatGPTMessageHandler.reset_chat_history(chat_id= chat_id);
+                chatGPTMessageHandler.reset_chat_history(chat_id= message.chat.id)
                 await message.answer('История чата была очищена',reply_markup=markups.mainMenu) 
-        elif message.text == '/start' or message.text == '/help' or message.text == '/balance' or message.text == '/manual':
+        elif message.text in commandlist:
             if message.text == '/start':
                 await dp.current_state(user=user_id).reset_state()
                 await bot_start(message)
             elif message.text == '/help':
                 await bot_help(message)
-            elif message.text == '/balance':
+            elif message.text == '/profile':
+                await dp.current_state(user=user_id).reset_state()
                 await balance_getter(message)
             elif message.text == '/manual':
                 await manual_getter(message)
@@ -69,16 +71,20 @@ async def chatgpt_handler(message: types.Message):
                 await message.answer(stats_mounth_message)
             else:
                 pass
+        elif message.text == 'Выход из режима 🔼':
+            await dp.current_state(user=user_id).reset_state()
+            await bot_start(message)
         else:
             if (db.get_user_balance(user_id=user_id) == "0"):
                 await message.answer('У вас закончились попытки, пожалуйста, пополните их')
             else:
                 await bot.send_chat_action(message.chat.id, "typing")
-                response = await chatGPTMessageHandler.get_chatgpt_message(chat_id, message.text)
+                response = await chatGPTMessageHandler.get_chatgpt_message(chat_id=message.chat.id , prompt=message.text,user_db=db.get_user_subscription(user_id=user_id))
                 await bot.send_message(chat_id=message.chat.id, text=response, reply_to_message_id=message.message_id)
                 db.decrease_user_balance(user_id=user_id,amount=1)
     
     except Exception as e:
+        logging.warning(f'Error in getting chatgpt model {str(e)}')
         await dp.current_state(user=user_id).reset_state()
         await bot_start(message)
         
@@ -100,7 +106,8 @@ async def dall_e_handler(message: types.Message):
                 await bot_start(message)
             elif message.text == '/help':
                 await bot_help(message)
-            elif message.text == '/balance':
+            elif message.text == '/profile':
+                await dp.current_state(user=user_id).reset_state()
                 await balance_getter(message)
             elif message.text == '/manual':
                 await manual_getter(message)
@@ -109,14 +116,15 @@ async def dall_e_handler(message: types.Message):
                 if (db.get_user_balance(user_id=user_id) == "0"):
                     await message.answer('У вас закончились попытки, пожалуйста, пополните их')
                 else:
-                    db.decrease_user_balance(user_id=user_id,amount=1)
+
                     await message.answer( 'Интересный запрос , подождите немного и бот отправит изображение')
                     await bot.send_chat_action(message.chat.id, "upload_photo")
-                    response = await dall_e.generate_image(message.text)
+                    response = await dall_e.generate_image(message.text,user_db=db.get_user_subscription(user_id=user_id))
                     await bot.send_chat_action(message.chat.id, aiogram.types.ChatActions.UPLOAD_PHOTO)
                     await bot.send_photo(chat_id=message.chat.id, photo=response, reply_to_message_id=message.message_id)
                     db.decrease_user_balance(user_id=user_id,amount=1)
             except Exception as e:
+                logging.warning(f'Error in getting dall-e model {str(e)}')
                 await dp.current_state(user=user_id).reset_state()
                 await bot_start(message)
                 
@@ -139,7 +147,8 @@ async def translator_handler(message: types.Message):
                 await bot_start(message)
             elif message.text == '/help':
                 await bot_help(message)
-            elif message.text == '/balance':
+            elif message.text == '/profile':
+                await dp.current_state(user=user_id).reset_state()
                 await balance_getter(message)
             elif message.text == '/manual':
                 await manual_getter(message)

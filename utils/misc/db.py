@@ -8,7 +8,7 @@ class Database:
 
     def add_user(self, user_id, user_name, user_username):
         with self.connection:
-            return self.cursor.execute("INSERT INTO users (user_id, user_name, user_username,datе) VALUES (?, ?, ?, ?)", (user_id, user_name, user_username , datetime.date.today()))
+            return self.cursor.execute("INSERT INTO users (user_id, user_name, user_username, date) VALUES (?, ?, ?, ?)", (user_id, user_name, user_username , datetime.date.today()))
 
     def user_exists(self,user_id):
         with self.connection:
@@ -46,7 +46,20 @@ class Database:
             for row in result :
                 balance = str(row[0])
             return balance
-    
+         
+    def get_user_subscription(self,user_id):
+        with self.connection:
+            result = self.cursor.execute("SELECT subscription FROM users WHERE user_id = ?",(user_id,)).fetchall()
+            user_subscription = None
+            for row in result:
+                user_subscription = str(row[0])
+            return user_subscription
+        
+    def change_subscription(self,user_id, subscription):
+        new_sub = subscription
+        with self.connection:
+            return self.cursor.execute("UPDATE users SET subscription = ? WHERE user_id = ?", (new_sub,user_id,))
+
     def get_all_userid(self):
         with self.connection:
             result = self.cursor.execute("SELECT user_id FROM users").fetchall()
@@ -57,7 +70,7 @@ class Database:
         last_week = datetime.datetime.now() - datetime.timedelta(days=7)
         last_week_str = last_week.strftime('%Y-%m-%d')
         with self.connection:
-            result = self.cursor.execute(f"SELECT user_id, user_name, user_username FROM users WHERE datе >= '{last_week_str}'").fetchall()
+            result = self.cursor.execute(f"SELECT user_id, user_name, user_username FROM users WHERE date >= '{last_week_str}'").fetchall()
             message_text = f'За последнюю неделю зарегистрировалось {len(result)} новых пользователей:\n'
             for row in result:
                 user_id = row[0]
@@ -71,7 +84,7 @@ class Database:
         last_week = datetime.datetime.now() - datetime.timedelta(days=30)
         last_week_str = last_week.strftime('%Y-%m-%d')
         with self.connection:
-            result = self.cursor.execute(f"SELECT user_id, user_name, user_username FROM users WHERE datе >= '{last_week_str}'").fetchall()
+            result = self.cursor.execute(f"SELECT user_id, user_name, user_username FROM users WHERE date >= '{last_week_str}'").fetchall()
             message_text = f'За последний месяц зарегистрировалось {len(result)} новых пользователей:\n'
             for row in result:
                 user_id = row[0]

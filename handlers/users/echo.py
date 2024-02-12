@@ -4,7 +4,6 @@ from aiogram import types
 from states.states import *
 from keyboards.default import markups
 from images import *
-from keyboards.inline import inlinemarkups
 
 # import profanity_check
 dp.register_message_handler(chatgpt_handler, state='chatgpt',content_types=['text'])
